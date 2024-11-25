@@ -96,7 +96,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size):
     print(f"Updated processed vectors saved to {output_file_path}")
 
 
-if __name__:
+if __name__ == '__main__':
     args = sys.argv[1:]
 
     if (ln := len(args)) != 4:
