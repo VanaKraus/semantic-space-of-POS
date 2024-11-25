@@ -94,7 +94,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size):
     # Write the updated dataframe to a new TSV file
     vectors_df.to_csv(output_file, sep="\t", index=False)
 
-    print(f"Updated processed vectors saved to {output_file_path}")
+    print(f"Updated processed vectors saved to {output_file}")
 
 
 if __name__ == '__main__':
