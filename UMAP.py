@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from umap import UMAP
 
-from chart import make_chart
+from .chart import make_chart
 
 
 def create_umap_visualization(

@@ -5,7 +5,7 @@ import sys
 import os
 
 
-def morphodita(filename, model_name= "czech-morfflex2.0-pdtc1.0-220710"):
+def morphodita(filename, model_name="czech-morfflex2.0-pdtc1.0-220710"):
     with open(filename, "r") as fs:
         # this way tokens are separated by \n\n (double new line)
         # morphodita reads this as if each token was its own sentence
