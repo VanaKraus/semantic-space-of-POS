@@ -5,9 +5,9 @@ import sys
 import os
 
 
-if __name__ == "__main__":
-    for arg in sys.argv[1:]:
-        with open(arg, "r") as fs:
+def morphodita(filenames, model_name= "czech-morfflex2.0-pdtc1.0-220710"):
+    for filename in filenames:
+        with open(filename, "r") as fs:
             # this way tokens are separated by \n\n (double new line)
             # morphodita reads this as if each token was its own sentence
             # meaning the tagging hopefully shouldn't be contextual
@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
         query = {
             "data": text,
-            "model": "czech-morfflex2.0-pdtc1.0-220710",
+            "model": model_name,
             # "model": "english-morphium-wsj-140407",
             "guesser": "no",
             "input": "vertical",
@@ -26,10 +26,14 @@ if __name__ == "__main__":
             "https://lindat.mff.cuni.cz/services/morphodita/api/tag", data=query
         )
 
-        with open(os.path.join("annotated", arg), "w+") as fs:
+        with open(os.path.join("annotated", filename), "w+") as fs:
             fs.write(
                 response.json()["result"]
                 .replace('"', "")
                 .replace("'", "")
                 .replace("\n\n", "\n")
             )
+
+
+if __name__ == "__main__":
+    morphodita(sys.argv[1:])
