@@ -8,7 +8,7 @@ import pandas as pd
 
 
 def ud_ignore_tags(tag):
-    return tag not in ['PROPN', 'PUNCT', 'X', 'SYM']
+    return tag in ['PROPN', 'PUNCT', 'X', 'SYM']
 
 def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_tags_lambda=ud_ignore_tags):
     print("Loading dictionary.")
@@ -61,7 +61,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_
     unwanted_POS_selector = (
         vectors_df["POS"].apply(ignore_tags_lambda)
     )
-    unwanted_rows = vectors_df[~unwanted_POS_selector]
+    unwanted_rows = vectors_df[unwanted_POS_selector]
     print(f"skipping {len(unwanted_rows)} row(s) with POS 'Other'")
     print(list(unwanted_rows["Word"]))
     vectors_df = vectors_df[~unwanted_POS_selector]
