@@ -67,6 +67,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size):
     print(f"skipping {len(unwanted_rows)} row(s) with POS 'Other'")
     print(list(unwanted_rows["Word"]))
     vectors_df = vectors_df[~unwanted_POS_selector]
+    print(f'{len(vectors_df)} left')
 
     # # Remove rows labeled as NNP or NNPS
     # unwanted_tag_selector = (vectors_df["Tag"] == "NNP") | (vectors_df["Tag"] == "NNPS")
