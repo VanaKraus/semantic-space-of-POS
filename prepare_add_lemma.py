@@ -7,7 +7,10 @@ import sys
 import pandas as pd
 
 
-def add_lemma(input_file, lemma_dict_path, output_file, target_size):
+def ud_ignore_tags(tag):
+    return tag not in ['PROPN', 'PUNCT', 'X', 'SYM']
+
+def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_tags_lambda=ud_ignore_tags):
     print("Loading dictionary.")
     # Load the Lemma Dictionary as a pandas DataFrame
     lemma_df = pd.read_csv(lemma_dict_path, sep="\t")
@@ -56,12 +59,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size):
 
     # Remove rows with unwanted POS
     unwanted_POS_selector = (
-        (vectors_df["POS"].str[0] == "B")
-        | (vectors_df["POS"].str[0] == "F")
-        | (vectors_df["POS"].str[0] == "Q")
-        | (vectors_df["POS"].str[0] == "S")
-        | (vectors_df["POS"].str[0] == "Z")
-        | (vectors_df["POS"].str[0] == "X")
+        vectors_df["POS"].apply(ignore_tags_lambda)
     )
     unwanted_rows = vectors_df[unwanted_POS_selector]
     print(f"skipping {len(unwanted_rows)} row(s) with POS 'Other'")
