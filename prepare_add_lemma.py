@@ -14,7 +14,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_
     print("Loading dictionary.")
     # Load the Lemma Dictionary as a pandas DataFrame
     lemma_df = pd.read_csv(lemma_dict_path, sep="\t")
-    lemma_df.columns = ["Word", "Lemma", "Tag", "POS"]
+    # lemma_df.columns = ["Word", "Lemma", "Tag", "POS"]
 
     # Ensure correct columns exist in Lemma Dictionary
     if not set(["Word", "Tag", "POS", "Lemma"]).issubset(lemma_df.columns):

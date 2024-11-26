@@ -7,7 +7,7 @@ import pandas as pd
 
 def add_POS_labeling(lemma_dict_path, POS_mapping_path, output_path):
     lemma_dict_df = pd.read_csv(lemma_dict_path, sep="\t")
-    lemma_dict_df.columns = ['Word', 'Lemma', 'Tag']
+    # lemma_dict_df.columns = ['Word', 'Lemma', 'Tag']
     # POS_mapping_df = pd.read_csv(POS_mapping_path, sep="\t")
 
     # mapping = POS_mapping_df.set_index("Tag")["POS"].to_dict()
