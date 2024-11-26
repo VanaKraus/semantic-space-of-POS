@@ -161,6 +161,21 @@ czech_POS = [
     "J",
     "N",
 ]
+ud_POS = [
+    "ADJ",  # adjective
+    "ADP",  # adposition
+    "ADV",  # adverb
+    "AUX",  # auxiliary
+    "CCONJ", # coordinating conjunction
+    "DET",  # determiner
+    "INTJ", # interjection
+    "NOUN", # noun
+    "NUM",  # numeral
+    "PART", # particle
+    "SCONJ", # subordinating conjunction
+    "VERB"  # verb
+]
+
 
 # Updated function calls with new output filenames
 if __name__ == "__main__":
