@@ -134,10 +134,4 @@ if __name__ == "__main__":
     if gamma not in ("scale", "auto"):
         gamma = float(gamma)
 
-    # input_file = "K:/Vektory CS/processed_vectors.tsv"
-    # output_file = "K:/Vektory CS/processed_vectors_SVM_probabilities.tsv"
-    # kernel = "rbf"  # Options: 'linear', 'poly', 'rbf', 'sigmoid'
-    # C = 1.0  # Regularization parameter
-    # gamma = "scale"  # Kernel coefficient (options: 'scale', 'auto', or a float value)
-
     predict_class_probabilities(input_file, output_file, kernel, C, gamma)

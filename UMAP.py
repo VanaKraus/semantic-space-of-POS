@@ -78,7 +78,6 @@ def create_umap_visualization(
     umap_df.to_csv(output_tsv_path, sep="\t", index=False)
 
     make_chart(umap_df, output_html_pos_path, "UMAP", model, lang, "POS")
-    # make_chart(umap_df, output_html_tag_path, "UMAP", model, lang, "Tag")
 
 
 # Your existing feature lists and function calls
@@ -161,43 +160,25 @@ czech_POS = [
     "J",
     "N",
 ]
+
 ud_POS = [
     "ADJ",  # adjective
     "ADP",  # adposition
     "ADV",  # adverb
     "AUX",  # auxiliary
-    "CCONJ", # coordinating conjunction
+    "CCONJ",  # coordinating conjunction
     "DET",  # determiner
-    "INTJ", # interjection
-    "NOUN", # noun
+    "INTJ",  # interjection
+    "NOUN",  # noun
     "NUM",  # numeral
-    "PART", # particle
-    "SCONJ", # subordinating conjunction
-    "VERB"  # verb
+    "PART",  # particle
+    "SCONJ",  # subordinating conjunction
+    "VERB",  # verb
 ]
 
 
 # Updated function calls with new output filenames
 if __name__ == "__main__":
-    # create_umap_visualization(
-    #     orig_features,
-    #     "K:/Vektory CS/processed_vectors.tsv",
-    #     "../figures/umap_word_vectors.pdf",
-    #     "K:/Vektory CS/processed_vectors_UMAP.tsv",
-    # )
-    # create_umap_visualization(
-    #     model_prob,
-    #     "K:/Vektory CS/processed_vectors_logistic regression_probabilities.tsv",
-    #     "../figures/umap_logres.pdf",
-    #     "K:/Vektory CS/processed_vectors_UMAP_logit.tsv",
-    # )
-    # create_umap_visualization(
-    #     model_prob,
-    #     "K:/Vektory CS/processed_vectors_SVM_probabilities.tsv",
-    #     "../figures/umap_SVM.pdf",
-    #     "K:/Vektory CS/processed_vectors_UMAP_SVM.tsv",
-    # )
-
     create_umap_visualization(
         orig_features,
         "processed_vectors_annot.tsv",
