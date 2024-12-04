@@ -48,7 +48,7 @@ def make_chart_3d(df, output_html, output_pdf, method, model, lang, color):
     z_column = f"{method} 3"
 
     # Create an interactive scatter plot using Plotly
-    fig = px.scatter(
+    fig = px.scatter_3d(
         df,
         x=x_column,
         y=y_column,
