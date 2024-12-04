@@ -35,7 +35,12 @@ def prepare_vectors(input_file, output_file, MAX_ROWS=1000):
     # Step 1: Load the dataset and remove the first line
     with open(input_file, "r", encoding="utf-8") as file:
         for line in file:
-            data += [line.strip().split()]
+            linesplt = line.strip().split()
+
+            if len(linesplt) not in (101, 0):
+                print(linesplt)
+            else:
+                data += [linesplt]
 
     # Limit the number of rows to MAX_ROWS + some overhead for interpunction that will be filtered out later
     data = data[: int(MAX_ROWS * 1.5)]

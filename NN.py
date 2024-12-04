@@ -181,6 +181,7 @@ def train(
                     f"{output_fig_file_base}_{set_label}.html",
                     f"{output_fig_file_base}_{set_label}.pdf",
                     "NN Bottleneck",
+                    "—",
                     f"Evaluation Set {i+1} (Set {set_label})",
                     "POS",
                 )
@@ -191,6 +192,7 @@ def train(
                     f"{output_fig_file_base}_{set_label}.html",
                     f"{output_fig_file_base}_{set_label}.pdf",
                     "NN Bottleneck",
+                    "—",
                     f"Evaluation Set {i+1} (Set {set_label})",
                     "POS",
                 )
