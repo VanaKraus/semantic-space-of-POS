@@ -8,9 +8,17 @@ import pandas as pd
 
 
 def ud_ignore_tags(tag):
-    return tag in ['PROPN', 'PUNCT', 'X', 'SYM']
+    return tag in ["PROPN", "PUNCT", "X", "SYM", "INTJ"]
 
-def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_tags_lambda=ud_ignore_tags):
+
+def add_lemma(
+    input_file,
+    lemma_dict_path,
+    output_file,
+    target_size,
+    *_,
+    ignore_tags_lambda=ud_ignore_tags,
+):
     print("Loading dictionary.")
     # Load the Lemma Dictionary as a pandas DataFrame
     lemma_df = pd.read_csv(lemma_dict_path, sep="\t")
@@ -58,14 +66,12 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_
     vectors_df = vectors_df[~nan_selector]
 
     # Remove rows with unwanted POS
-    unwanted_POS_selector = (
-        vectors_df["POS"].apply(ignore_tags_lambda)
-    )
+    unwanted_POS_selector = vectors_df["POS"].apply(ignore_tags_lambda)
     unwanted_rows = vectors_df[unwanted_POS_selector]
     print(f"skipping {len(unwanted_rows)} row(s) with POS 'Other'")
     print(list(unwanted_rows["Word"]))
     vectors_df = vectors_df[~unwanted_POS_selector]
-    print(f'{len(vectors_df)} left')
+    print(f"{len(vectors_df)} left")
 
     # # Remove rows labeled as NNP or NNPS
     # unwanted_tag_selector = (vectors_df["Tag"] == "NNP") | (vectors_df["Tag"] == "NNPS")
@@ -96,7 +102,7 @@ def add_lemma(input_file, lemma_dict_path, output_file, target_size, *_, ignore_
     print(f"Updated processed vectors saved to {output_file}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = sys.argv[1:]
 
     if (ln := len(args)) != 4:

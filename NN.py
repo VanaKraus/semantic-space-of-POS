@@ -16,6 +16,8 @@ from tensorflow.keras.callbacks import Callback
 
 from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization
 
+from .chart import make_chart, make_chart_3d
+
 
 def train(
     input_file: str,
@@ -73,7 +75,6 @@ def train(
         # Split the data into training and evaluation sets
         X_train, X_eval = X[train_idx], X[eval_idx]
         y_train, y_eval = y_one_hot[train_idx], y_one_hot[eval_idx]
-        groups_eval = groups[eval_idx]
         pos_labels_eval = pos_labels[eval_idx]
 
         # Define the neural network
@@ -104,8 +105,8 @@ def train(
             batch_size=32,
             validation_data=(X_eval, y_eval),
             verbose=0,  # Suppress default Keras output
-            callbacks=[EpochEndCallback()],
-        )  # Custom callback for epoch-end updates)
+            callbacks=[EpochEndCallback()],  # Custom callback for epoch-end updates)
+        )
 
         print(f"Training {i+1} done")
         # Extract embeddings and probabilities for the evaluation set
@@ -175,17 +176,24 @@ def train(
                 plt.savefig(f"{output_fig_file_base}_{set_label}.pdf", format="pdf")
                 plt.close()
 
-            case 3:
-                px.scatter_3d(
+                make_chart(
                     data_eval,
-                    title=f"3D Visualization of Evaluation Set {i+1} (Set {set_label})",
-                    x="Bottleneck layer 1",
-                    y="Bottleneck layer 2",
-                    z="Bottleneck layer 3",
-                    color="POS",
-                    hover_name="Word",
-                    opacity=0.8,
-                ).write_html(f"{output_fig_file_base}_{set_label}.html")
+                    f"{output_fig_file_base}_{set_label}.html",
+                    f"{output_fig_file_base}_{set_label}.pdf",
+                    "NN Bottleneck",
+                    f"Evaluation Set {i+1} (Set {set_label})",
+                    "POS",
+                )
+
+            case 3:
+                make_chart_3d(
+                    data_eval,
+                    f"{output_fig_file_base}_{set_label}.html",
+                    f"{output_fig_file_base}_{set_label}.pdf",
+                    "NN Bottleneck",
+                    f"Evaluation Set {i+1} (Set {set_label})",
+                    "POS",
+                )
 
             case _:
                 print(
