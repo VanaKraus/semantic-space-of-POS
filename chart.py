@@ -2,17 +2,17 @@ import plotly.express as px
 
 
 ud_color_scheme = {
-    "ADJ": "#1f77b4",  # Blue
-    "ADP": "#ff7f0e",  # Orange
-    "ADV": "#2ca02c",  # Green
-    "AUX": "#d62728",  # Red
-    "CCONJ": "#9467bd",  # Purple
-    "DET": "#8c564b",  # Brown
-    "NOUN": "#e377c2",  # Pink
-    "NUM": "#7f7f7f",  # Gray
-    "PART": "#bcbd22",  # Yellow-green
-    "SCONJ": "#17becf",  # Cyan
-    "VERB": "#ff9896",  # Light red
+    "ADJ": "#e60049",
+    "ADP": "#dc0ab4",
+    "ADV": "#50e991",
+    "AUX": "#fd7f6f",
+    "CCONJ": "#9b19f5",
+    "DET": "#ffa300",
+    "NOUN": "#0bb4ff",
+    "NUM": "#b3d4ff",
+    "PART": "#00bfa0",
+    "SCONJ": "#7c1158",
+    "VERB": "#e6d800",
 }
 
 legend_keys = list(ud_color_scheme.keys())
@@ -37,6 +37,7 @@ def make_chart(
         category_orders={color: legend_keys},
         hover_name="Word",
         title=f"Interactive map of {color} in {lang} ({method} of {model})",
+        # opacity=0.5,
     )
     fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
 
@@ -66,7 +67,7 @@ def make_chart_3d(
         category_orders={color: legend_keys},
         hover_name="Word",
         title=f"Interactive map of {color} in {lang} ({method} of {model})",
-        opacity=0.8,
+        # opacity=0.5,
     )
     fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
 
