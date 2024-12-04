@@ -196,7 +196,7 @@ def train(
                     "—",
                     f"Evaluation Set {i+1} (Set {set_label})",
                     "POS",
-                    "Bottleneck layer ",
+                    "Bottleneck layer",
                 )
 
             case _:

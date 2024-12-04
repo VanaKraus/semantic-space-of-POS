@@ -15,6 +15,9 @@ ud_color_scheme = {
     "VERB": "#ff9896",  # Light red
 }
 
+legend_keys = list(ud_color_scheme.keys())
+legend_keys.sort()
+
 
 def make_chart(
     df, output_html, output_pdf, method, model, lang, color, axis_label_basename
@@ -31,6 +34,7 @@ def make_chart(
         y=y_column,
         color=color,
         color_discrete_map=ud_color_scheme,
+        category_orders={color: legend_keys},
         hover_name="Word",
         title=f"Interactive map of {color} in {lang} ({method} of {model})",
     )
@@ -59,6 +63,7 @@ def make_chart_3d(
         z=z_column,
         color=color,
         color_discrete_map=ud_color_scheme,
+        category_orders={color: legend_keys},
         hover_name="Word",
         title=f"Interactive map of {color} in {lang} ({method} of {model})",
         opacity=0.8,
