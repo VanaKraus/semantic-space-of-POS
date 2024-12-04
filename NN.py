@@ -184,6 +184,7 @@ def train(
                     "—",
                     f"Evaluation Set {i+1} (Set {set_label})",
                     "POS",
+                    "Bottleneck layer",
                 )
 
             case 3:
@@ -195,6 +196,7 @@ def train(
                     "—",
                     f"Evaluation Set {i+1} (Set {set_label})",
                     "POS",
+                    "Bottleneck layer ",
                 )
 
             case _:

@@ -77,7 +77,9 @@ def create_umap_visualization(
     # Save the new DataFrame as a TSV file
     umap_df.to_csv(output_tsv_path, sep="\t", index=False)
 
-    make_chart(umap_df, output_html_path, output_pdf_path, "UMAP", model, lang, "POS")
+    make_chart(
+        umap_df, output_html_path, output_pdf_path, "UMAP", model, lang, "POS", "UMAP"
+    )
 
 
 # Your existing feature lists and function calls

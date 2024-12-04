@@ -16,11 +16,13 @@ ud_color_scheme = {
 }
 
 
-def make_chart(df, output_html, output_pdf, method, model, lang, color):
+def make_chart(
+    df, output_html, output_pdf, method, model, lang, color, axis_label_basename
+):
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
-    x_column = f"{method} 1"
-    y_column = f"{method} 2"
+    x_column = f"{axis_label_basename} 1"
+    y_column = f"{axis_label_basename} 2"
 
     # Create an interactive scatter plot using Plotly
     fig = px.scatter(
@@ -40,12 +42,14 @@ def make_chart(df, output_html, output_pdf, method, model, lang, color):
     print(f"Interactive {method} of {model} scatter plot generated successfully.")
 
 
-def make_chart_3d(df, output_html, output_pdf, method, model, lang, color):
+def make_chart_3d(
+    df, output_html, output_pdf, method, model, lang, color, axis_label_basename
+):
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
-    x_column = f"{method} 1"
-    y_column = f"{method} 2"
-    z_column = f"{method} 3"
+    x_column = f"{axis_label_basename} 1"
+    y_column = f"{axis_label_basename} 2"
+    z_column = f"{axis_label_basename} 3"
 
     # Create an interactive scatter plot using Plotly
     fig = px.scatter_3d(
