@@ -20,6 +20,7 @@ def train(
     output_file: str,
     output_file_sets: Iterable[str],
     n_epochs: int,
+    layers: Iterable[int],
     bottleneck_dimensions: int,
 ):
 
@@ -72,9 +73,10 @@ def train(
         # Define the neural network
         input_dim = X.shape[1]
         inputs = Input(shape=(input_dim,))
-        x = Dense(128, activation="relu")(inputs)
-        x = Dense(64, activation="relu")(x)
-        x = Dense(16, activation="relu")(x)
+
+        x = inputs
+        for dim in layers:
+            x = Dense(dim, activation="relu")(x)
 
         # N-D latent space
         bottleneck = Dense(
@@ -164,4 +166,4 @@ if __name__ == "__main__":
     input_file, output_file, vizualization_file, epochs, bottleneck_dim = args
     epochs, bottleneck_dim = int(epochs), int(bottleneck_dim)
 
-    train(input_file, output_file, vizualization_file, epochs, bottleneck_dim)
+    train(input_file, output_file, vizualization_file, epochs, [128], bottleneck_dim)
