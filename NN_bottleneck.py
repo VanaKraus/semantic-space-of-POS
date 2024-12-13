@@ -4,10 +4,7 @@ import sys
 from collections.abc import Iterable
 
 import pandas as pd
-import numpy as np
 
-import matplotlib.pyplot as plt
-import plotly.express as px
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GroupShuffleSplit
 from tensorflow.keras.models import Model
@@ -15,9 +12,7 @@ from tensorflow.keras.layers import Input, Dense
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import Callback
 
-from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization
-
-from .chart import make_chart, make_chart_3d
+from tensorflow.keras.layers import Input, Dense
 
 
 def train(
@@ -54,9 +49,6 @@ def train(
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    # Map integer labels back to POS labels
-    pos_labels = label_encoder.inverse_transform(y_encoded)
-
     # Convert labels to one-hot encoding
     y_one_hot = to_categorical(y_encoded)
 
@@ -76,7 +68,6 @@ def train(
         # Split the data into training and evaluation sets
         X_train, X_eval = X[train_idx], X[eval_idx]
         y_train, y_eval = y_one_hot[train_idx], y_one_hot[eval_idx]
-        pos_labels_eval = pos_labels[eval_idx]
 
         # Define the neural network
         input_dim = X.shape[1]
@@ -132,7 +123,7 @@ def train(
             data_eval[f"Probability_{pos}"] = probabilities_eval[:, idx]
 
         # Indicate whether the data point was in set A or B
-        data_eval["Set"] = set_label
+        data_eval["Training_Round"] = set_label
 
         # Append the evaluation results
         eval_results.append(data_eval)
@@ -149,7 +140,7 @@ def train(
 
     cols = data_combined.columns.tolist()
     pos_index = cols.index("POS")
-    cols.insert(pos_index + 1, cols.pop(cols.index("Set")))
+    cols.insert(pos_index + 1, cols.pop(cols.index("Training_Round")))
     data_combined = data_combined[cols]
 
     # Save the combined data to output_file
