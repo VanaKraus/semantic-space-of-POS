@@ -1,5 +1,5 @@
 import plotly.express as px
-
+from pandas import DataFrame, read_csv
 
 ud_color_scheme = {
     "ADJ": "#e60049",
@@ -20,8 +20,11 @@ legend_keys.sort()
 
 
 def make_chart(
-    df, output_html, output_pdf, method, model, lang, color, axis_label_basename
+    data: DataFrame | str, output_html, output_pdf, color, axis_label_basename, title
 ):
+    if isinstance(data, str):
+        data = read_csv(data, sep="\t")
+
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
     x_column = f"{axis_label_basename} 1"
@@ -29,14 +32,14 @@ def make_chart(
 
     # Create an interactive scatter plot using Plotly
     fig = px.scatter(
-        df,
+        data,
         x=x_column,
         y=y_column,
         color=color,
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
-        title=f"Interactive map of {color} in {lang} ({method} of {model})",
+        title=title,
         # opacity=0.5,
     )
     fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
@@ -44,12 +47,15 @@ def make_chart(
     fig.write_html(output_html)
     fig.write_image(output_pdf, format="pdf")
 
-    print(f"Interactive {method} of {model} scatter plot generated successfully.")
+    print(f"{title} generated successfully.")
 
 
 def make_chart_3d(
-    df, output_html, output_pdf, method, model, lang, color, axis_label_basename
+    data: DataFrame | str, output_html, output_pdf, color, axis_label_basename, title
 ):
+    if isinstance(data, str):
+        data = read_csv(data, sep="\t")
+
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
     x_column = f"{axis_label_basename} 1"
@@ -58,7 +64,7 @@ def make_chart_3d(
 
     # Create an interactive scatter plot using Plotly
     fig = px.scatter_3d(
-        df,
+        data,
         x=x_column,
         y=y_column,
         z=z_column,
@@ -66,7 +72,7 @@ def make_chart_3d(
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
-        title=f"Interactive map of {color} in {lang} ({method} of {model})",
+        title=title,
         # opacity=0.5,
     )
     fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
@@ -74,4 +80,4 @@ def make_chart_3d(
     fig.write_html(output_html)
     fig.write_image(output_pdf, format="pdf")
 
-    print(f"Interactive {method} of {model} scatter plot generated successfully.")
+    print(f"{title} generated successfully.")

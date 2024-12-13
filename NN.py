@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+from collections.abc import Iterable
 
 import pandas as pd
 import numpy as np
@@ -22,7 +23,7 @@ from .chart import make_chart, make_chart_3d
 def train(
     input_file: str,
     output_file: str,
-    output_fig_file_base: str,
+    output_file_sets: Iterable[str],
     n_epochs: int,
     bottleneck_dimensions: int,
 ):
@@ -136,73 +137,9 @@ def train(
         # Append the evaluation results
         eval_results.append(data_eval)
 
-        # Prepare a color map for different POS tags
-        unique_pos = np.unique(pos_labels_eval)
-
-        match (bottleneck_dimensions):
-            case 2:
-                # Create a color map
-                cmap = plt.cm.get_cmap("tab10", len(unique_pos))
-
-                # Create a dictionary for POS to color mapping
-                pos_to_color = {pos: cmap(j) for j, pos in enumerate(unique_pos)}
-
-                # Plot the embeddings and save as PDF
-                plt.figure(figsize=(12, 8))
-
-                # Assign colors to each point based on POS tag and plot
-                for pos in unique_pos:
-                    indices = pos_labels_eval == pos
-                    plt.scatter(
-                        embeddings_eval[indices, 0],
-                        embeddings_eval[indices, 1],
-                        color=pos_to_color[pos],
-                        label=pos,
-                        alpha=0.7,
-                        s=10,
-                    )
-
-                # Add legend and labels
-                plt.title(f"2D Visualization of Evaluation Set {i+1} (Set {set_label})")
-                plt.xlabel("Bottleneck layer 1")
-                plt.ylabel("Bottleneck layer 2")
-                legend = plt.legend(
-                    loc="best", markerscale=3, fontsize="small", frameon=True
-                )
-                for handle in legend.legend_handles:
-                    handle.set_alpha(0.8)
-
-                # Save the plot as a PDF
-                plt.savefig(f"{output_fig_file_base}_{set_label}.pdf", format="pdf")
-                plt.close()
-
-                make_chart(
-                    data_eval,
-                    f"{output_fig_file_base}_{set_label}.html",
-                    f"{output_fig_file_base}_{set_label}.pdf",
-                    "NN Bottleneck",
-                    "—",
-                    f"Evaluation Set {i+1} (Set {set_label})",
-                    "POS",
-                    "Bottleneck layer",
-                )
-
-            case 3:
-                make_chart_3d(
-                    data_eval,
-                    f"{output_fig_file_base}_{set_label}.html",
-                    f"{output_fig_file_base}_{set_label}.pdf",
-                    "NN Bottleneck",
-                    "—",
-                    f"Evaluation Set {i+1} (Set {set_label})",
-                    "POS",
-                    "Bottleneck layer",
-                )
-
-            case _:
-                print(
-                    "Warning: visualizations only supported for 2- and 3-dimensional bottlenecks"
-                )
+        data_eval.drop(columns=feature_cols).to_csv(
+            output_file_sets[i], sep="\t", index=False
+        )
 
     # Combine the evaluation results
     data_combined = pd.concat(eval_results, ignore_index=True)
