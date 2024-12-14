@@ -7,6 +7,9 @@ import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GroupShuffleSplit
+
+import tensorflow as tf
+
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense
 from tensorflow.keras.utils import to_categorical, set_random_seed
@@ -19,6 +22,7 @@ def train(
     input_file: str, output_file: str, n_epochs: int, layers: Iterable[int], seed: int
 ):
     set_random_seed(seed)
+    tf.config.experimental.enable_op_determinism()
 
     # Custom callback to print precision after each epoch
     class EpochEndCallback(Callback):
@@ -81,7 +85,10 @@ def train(
 
         # Compile the model
         model.compile(
-            optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"]
+            optimizer="adam",
+            loss="categorical_crossentropy",
+            metrics=["accuracy"],
+            jit_compile=False,
         )
 
         # Train the model
