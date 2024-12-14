@@ -4,13 +4,12 @@ import sys
 
 import pandas as pd
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import GroupShuffleSplit
 
 
 def predict_class_probabilities(
-    input_file, output_file, kernel="rbf", C=1.0, gamma="scale"
+    input_file, output_file, kernel="rbf", C=1.0, gamma="scale", seed: int | None = None
 ):
     # Read the TSV file
     data = pd.read_csv(input_file, sep="\t")
@@ -29,16 +28,12 @@ def predict_class_probabilities(
     # Extract the target column (POS)
     y = data["POS"]
 
-    # Split the data into two halves promitive way
-    # X_A, X_B, y_A, y_B = train_test_split(X, y, test_size=0.5, random_state=42)
-    # we need to make the split so that all lines that have the same value in column 'Lemma' are in the same half.
-
     # Extract the group column (Lemma)
     groups = data["Lemma"]
 
     # Create a GroupShuffleSplit object
     print("Shuffle")
-    gss = GroupShuffleSplit(n_splits=1, test_size=0.5, random_state=42)
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.5, random_state=seed)
 
     # Split the data into two halves based on the 'Lemma' column
     print("Split")
@@ -50,7 +45,7 @@ def predict_class_probabilities(
 
     # First round: Train on A, validate on B
     print("First round: Train on A, validate on B")
-    model_A = SVC(kernel=kernel, C=C, gamma=gamma, probability=True)
+    model_A = SVC(kernel=kernel, C=C, gamma=gamma, probability=True, random_state=seed)
     model_A.fit(X_A, y_A)
 
     probabilities_A = model_A.predict_proba(X_B)
@@ -59,7 +54,7 @@ def predict_class_probabilities(
 
     # Second round: Train on B, validate on A
     print("Second round: Train on B, validate on A")
-    model_B = SVC(kernel=kernel, C=C, gamma=gamma, probability=True)
+    model_B = SVC(kernel=kernel, C=C, gamma=gamma, probability=True, random_state=seed)
     model_B.fit(X_B, y_B)
 
     probabilities_B = model_B.predict_proba(X_A)

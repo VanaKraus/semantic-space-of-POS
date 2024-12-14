@@ -7,9 +7,10 @@ import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GroupShuffleSplit
+
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense
-from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical, set_random_seed
 from tensorflow.keras.callbacks import Callback
 
 from tensorflow.keras.layers import Input, Dense
@@ -22,7 +23,9 @@ def train(
     n_epochs: int,
     layers: Iterable[int],
     bottleneck_dimensions: int,
+    seed: int,
 ):
+    set_random_seed(seed)
 
     # Custom callback to print precision after each epoch
     class EpochEndCallback(Callback):
@@ -54,7 +57,7 @@ def train(
     y_one_hot = to_categorical(y_encoded)
 
     # Split the data into two halves, grouped by 'Lemma'
-    gss = GroupShuffleSplit(n_splits=1, test_size=0.5, random_state=42)
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.5, random_state=seed)
     train_idx_A, train_idx_B = next(gss.split(X, y_encoded, groups=groups))
 
     # Create an empty list to collect evaluation results

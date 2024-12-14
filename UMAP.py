@@ -1,16 +1,13 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
 from umap import UMAP
-
-from .chart import make_chart
 
 
 def create_umap(
-    feature_names,
-    input_file,
-    output_tsv_path,
-    n_components,
+    feature_names: list[str],
+    input_file: str,
+    output_tsv_path: str,
+    n_components: int,
+    seed: int | None = None,
 ):
     # Load the TSV file
     df = pd.read_csv(input_file, sep="\t")
@@ -23,7 +20,7 @@ def create_umap(
     # Using parameters that make it somewhat similar to t-SNE
     umap = UMAP(
         n_components=n_components,
-        random_state=42,
+        random_state=seed,
         n_neighbors=30,  # Similar to perplexity in t-SNE
         min_dist=0.3,  # orig 0.1
     )
