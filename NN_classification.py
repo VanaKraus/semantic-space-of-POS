@@ -15,7 +15,7 @@ from tensorflow.keras.layers import Input, Dense
 from tensorflow.keras.utils import to_categorical, set_random_seed
 from tensorflow.keras.callbacks import Callback
 
-from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.layers import Input, Dense, Dropout
 
 
 def train(
@@ -77,6 +77,7 @@ def train(
         x = inputs
         for dim in layers:
             x = Dense(dim, activation="relu")(x)
+            x = Dropout(0.3)(x)
 
         # N-D latent space
         outputs = Dense(y_one_hot.shape[1], activation="softmax")(x)

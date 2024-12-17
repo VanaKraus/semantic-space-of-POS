@@ -20,10 +20,18 @@ legend_keys.sort()
 
 
 def make_chart(
-    data: DataFrame | str, output_html, output_pdf, color, axis_label_basename, title
+    data: DataFrame | str,
+    output_html,
+    output_pdf,
+    color,
+    axis_label_basename,
+    title,
+    hover_data,
 ):
     if isinstance(data, str):
         data = read_csv(data, sep="\t")
+
+    mhover_data = [c for c in hover_data if c in data]
 
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
@@ -39,6 +47,7 @@ def make_chart(
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
+        hover_data=[x_column, y_column] + mhover_data,
         title=title,
         # opacity=0.5,
     )
@@ -51,7 +60,13 @@ def make_chart(
 
 
 def make_chart_3d(
-    data: DataFrame | str, output_html, output_pdf, color, axis_label_basename, title
+    data: DataFrame | str,
+    output_html,
+    output_pdf,
+    color,
+    axis_label_basename,
+    title,
+    hover_data,
 ):
     if isinstance(data, str):
         data = read_csv(data, sep="\t")
@@ -61,6 +76,8 @@ def make_chart_3d(
     x_column = f"{axis_label_basename} 1"
     y_column = f"{axis_label_basename} 2"
     z_column = f"{axis_label_basename} 3"
+
+    mhover_data = [c for c in hover_data if c in data]
 
     # Create an interactive scatter plot using Plotly
     fig = px.scatter_3d(
@@ -72,6 +89,7 @@ def make_chart_3d(
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
+        hover_data=[x_column, y_column, z_column] + mhover_data,
         title=title,
         # opacity=0.5,
     )
