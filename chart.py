@@ -53,8 +53,11 @@ def make_chart(
         # opacity=0.5,
     )
     fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
+    fig.update_layout(legend={"itemsizing": "constant"})
 
     fig.write_html(output_html)
+
+    fig.update_traces(marker={"size": 2.5})
     fig.write_image(output_pdf, format="pdf")
 
     print(f"{title} generated successfully.")
@@ -95,6 +98,8 @@ def make_chart_3d(
         # opacity=0.5,
     )
     fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
+    fig.update_layout(legend={"itemsizing": "constant"})
+    fig.update_traces(marker={"size": 2.5})
 
     fig.write_html(output_html)
     fig.write_image(output_pdf, format="pdf")
