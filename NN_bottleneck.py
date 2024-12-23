@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import sys
 from collections.abc import Iterable
 
@@ -43,7 +44,7 @@ def train(
     data = pd.read_csv(input_file, sep="\t")
 
     # Extract the feature columns
-    feature_cols = [cname for cname in data if cname.startswith("D")]
+    feature_cols = [cname for cname in data if re.match(r"D[0-9]+", cname)]
     X = data[feature_cols].values  # Convert to NumPy array
 
     # Extract the target column (POS)
@@ -129,7 +130,7 @@ def train(
 
         # Add probability columns for each POS category
         for idx, pos in enumerate(pos_category_names):
-            data_eval[f"Probability_{pos}"] = probabilities_eval[:, idx]
+            data_eval[pos] = probabilities_eval[:, idx]
 
         # Indicate whether the data point was in set A or B
         data_eval["Training_Round"] = set_label

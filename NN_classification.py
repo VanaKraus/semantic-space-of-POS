@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import sys
 from collections.abc import Iterable
 
@@ -37,7 +38,7 @@ def train(
     data = pd.read_csv(input_file, sep="\t")
 
     # Extract the feature columns
-    feature_cols = [cname for cname in data if cname.startswith("D")]
+    feature_cols = [cname for cname in data if re.match(r"D[0-9]+", cname)]
     X = data[feature_cols].values  # Convert to NumPy array
 
     # Extract the target column (POS)

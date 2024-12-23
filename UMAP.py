@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd
 from umap import UMAP
 
@@ -27,7 +29,7 @@ def create_umap(
     umap_results = umap.fit_transform(features)
 
     # Create a new DataFrame for the output TSV
-    umap_df = df.drop(columns=[col for col in df.columns if col.startswith("D")])
+    umap_df = df.drop(columns=[col for col in df.columns if re.match(r"D[0-9]+", col)])
 
     for i in range(n_components):
         umap_df[f"UMAP {i+1}"] = umap_results[:, i]
@@ -127,6 +129,7 @@ ud_POS = [
     "NOUN",  # noun
     "NUM",  # numeral
     "PART",  # particle
+    "PRON",  # pronoun
     "SCONJ",  # subordinating conjunction
     "VERB",  # verb
 ]

@@ -11,6 +11,7 @@ ud_color_scheme = {
     "NOUN": "#0bb4ff",
     "NUM": "#b3d4ff",
     "PART": "#00bfa0",
+    "PRON": "#77ac35",
     "SCONJ": "#7c1158",
     "VERB": "#e6d800",
 }
