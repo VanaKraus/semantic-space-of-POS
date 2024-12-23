@@ -20,6 +20,12 @@ legend_keys = list(ud_color_scheme.keys())
 legend_keys.sort()
 
 
+def humanify_probability(prob: float) -> str:
+    rounded = round(prob, 3)
+
+    return f"{rounded:.3f}" if rounded >= 0.001 else "—"
+
+
 def make_chart(
     data: DataFrame | str,
     output_html,
@@ -29,26 +35,36 @@ def make_chart(
     title,
     hover_data,
 ):
-    if isinstance(data, str):
-        data = read_csv(data, sep="\t")
+    data_tmp = read_csv(data, sep="\t") if isinstance(data, str) else data.copy()
 
-    mhover_data = [c for c in hover_data if c in data]
+    mhover_data = [c for c in hover_data if c in data_tmp]
+
+    for col in mhover_data:
+        data_tmp[col] = data_tmp[col].transform(humanify_probability)
 
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
     x_column = f"{axis_label_basename} 1"
     y_column = f"{axis_label_basename} 2"
 
+    position_cols = [x_column, y_column]
+
+    mhover_cols = [c for c in hover_data if c in data_tmp]
+    for col in mhover_cols:
+        data_tmp[col] = data_tmp[col].transform(humanify_probability)
+
+    data_tmp = data_tmp[["Word", color] + mhover_cols + position_cols]
+
     # Create an interactive scatter plot using Plotly
     fig = px.scatter(
-        data,
+        data_tmp,
         x=x_column,
         y=y_column,
         color=color,
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
-        hover_data=[x_column, y_column] + mhover_data,
+        hover_data=mhover_data,
         title=title,
         # opacity=0.5,
     )
@@ -72,8 +88,7 @@ def make_chart_3d(
     title,
     hover_data,
 ):
-    if isinstance(data, str):
-        data = read_csv(data, sep="\t")
+    data_tmp = read_csv(data, sep="\t") if isinstance(data, str) else data.copy()
 
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
@@ -81,11 +96,17 @@ def make_chart_3d(
     y_column = f"{axis_label_basename} 2"
     z_column = f"{axis_label_basename} 3"
 
-    mhover_data = [c for c in hover_data if c in data]
+    position_cols = [x_column, y_column, z_column]
+
+    mhover_cols = [c for c in hover_data if c in data_tmp]
+    for col in mhover_cols:
+        data_tmp[col] = data_tmp[col].transform(humanify_probability)
+
+    data_tmp = data_tmp[["Word", color] + mhover_cols + position_cols]
 
     # Create an interactive scatter plot using Plotly
     fig = px.scatter_3d(
-        data,
+        data_tmp,
         x=x_column,
         y=y_column,
         z=z_column,
@@ -93,7 +114,7 @@ def make_chart_3d(
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
-        hover_data=[x_column, y_column, z_column] + mhover_data,
+        hover_data=mhover_cols,
         title=title,
         # opacity=0.5,
     )
