@@ -37,11 +37,6 @@ def make_chart(
 ):
     data_tmp = read_csv(data, sep="\t") if isinstance(data, str) else data.copy()
 
-    mhover_data = [c for c in hover_data if c in data_tmp]
-
-    for col in mhover_data:
-        data_tmp[col] = data_tmp[col].transform(humanify_probability)
-
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
     x_column = f"{axis_label_basename} 1"
@@ -64,7 +59,7 @@ def make_chart(
         color_discrete_map=ud_color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
-        hover_data=mhover_data,
+        hover_data=mhover_cols,
         title=title,
         # opacity=0.5,
     )
