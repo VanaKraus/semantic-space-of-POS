@@ -16,10 +16,11 @@ def predict_class_probabilities(
 
     # Check for NANs
     nan_selector = data.isna().any(axis=1)
-    nan_rows = data[nan_selector]
-    print(f"skipping {len(nan_rows)} row(s) containing NAN values")
-    print(list(nan_rows["Word"]))
-    data = data[~nan_selector]
+    if any(nan_selector):
+        nan_rows = data[nan_selector]
+        print(f"skipping {len(nan_rows)} row(s) containing NAN values")
+        print(list(nan_rows["Word"]))
+        data = data[~nan_selector]
 
     # Extract the feature columns (D1-D100)
     feature_cols = ["D" + str(i) for i in range(1, 101)]

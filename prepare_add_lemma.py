@@ -6,9 +6,11 @@ import sys
 
 import pandas as pd
 
+TAG_STOPLIST = ["PROPN", "PUNCT", "X", "SYM", "INTJ"]
+
 
 def ud_ignore_tags(tag):
-    return tag in ["PROPN", "PUNCT", "X", "SYM", "INTJ"]
+    return tag in TAG_STOPLIST
 
 
 def add_lemma(
@@ -68,7 +70,7 @@ def add_lemma(
     # Remove rows with unwanted POS
     unwanted_POS_selector = vectors_df["POS"].apply(ignore_tags_lambda)
     unwanted_rows = vectors_df[unwanted_POS_selector]
-    print(f"skipping {len(unwanted_rows)} row(s) with POS 'Other'")
+    print(f"skipping {len(unwanted_rows)} row(s) with POS {TAG_STOPLIST}")
     print(list(unwanted_rows["Word"]))
     vectors_df = vectors_df[~unwanted_POS_selector]
     print(f"{len(vectors_df)} left")
