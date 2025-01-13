@@ -63,8 +63,10 @@ def make_chart(
         title=title,
         # opacity=0.5,
     )
-    fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
-    fig.update_layout(legend={"itemsizing": "constant"})
+    fig.update_layout(
+        plot_bgcolor="rgba(0, 0, 0, 0)",
+        legend={"itemsizing": "constant"},
+    )
 
     fig.write_html(output_html)
 
@@ -111,10 +113,13 @@ def make_chart_3d(
         hover_name="Word",
         hover_data=mhover_cols,
         title=title,
+        template="plotly_white",
         # opacity=0.5,
     )
-    fig = fig.update_layout(plot_bgcolor="rgba(0, 0, 0, 0)")
-    fig.update_layout(legend={"itemsizing": "constant"})
+    fig.update_layout(
+        plot_bgcolor="rgba(0, 0, 0, 0)",
+        legend={"itemsizing": "constant"},
+    )
     fig.update_traces(marker={"size": 2.5})
 
     fig.write_html(output_html)
