@@ -7,12 +7,15 @@ import zipfile
 dname = os.path.dirname(os.path.realpath(__file__))
 
 
-def get_zip(url):
+def get_zip(url, down_dir=None):
+    if down_dir is None:
+        down_dir = dname
+
     print(f"Download {url}")
     req = requests.get(url)
 
     bname = os.path.basename(url)
-    fname = os.path.join(dname, bname)
+    fname = os.path.join(down_dir, bname)
     print(f"Write to {fname}")
     with open(fname, "wb") as f:
         f.write(req.content)
