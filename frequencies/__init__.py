@@ -29,7 +29,7 @@ def get_zip(url, down_dir=None):
 
 
 def sorted_df(path: str, lines: int | None = None) -> pd.DataFrame:
-    print(f'Read {lines if lines else 'max'} lines from {path}')
+    print(f"Read {lines if lines else 'max'} lines from {path}")
     return (
         pd.read_csv(path, sep="\t", nrows=lines)
         if lines
@@ -38,7 +38,7 @@ def sorted_df(path: str, lines: int | None = None) -> pd.DataFrame:
 
 
 def sorted_df_pivot_long(df: pd.DataFrame) -> pd.DataFrame:
-    print('Pivot frequency dictionary long')
+    print("Pivot frequency dictionary long")
     mdf = df.copy()
 
     mdf["Variants"] = mdf["Variants"].str.split(",")
@@ -56,12 +56,12 @@ def sorted_df_pivot_long(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def sorted_df_filter_POS(df: pd.DataFrame, POS_stoplist: list[str]) -> pd.DataFrame:
-    print(f'Filter {POS_stoplist} out of the frequency dictionary')
+    print(f"Filter {POS_stoplist} out of the frequency dictionary")
     return df.loc[-df["POS"].isin(POS_stoplist)].reset_index(drop=True)
 
 
 def sorted_df_widen_filtered(df: pd.DataFrame) -> pd.DataFrame:
-    print('Pivot long frequency dictionary wide')
+    print("Pivot long frequency dictionary wide")
     df = df.assign(Freq_Sum=df.groupby("Word")["Frequency"].transform("sum"))
     df.drop(columns=["Total Frequency"], inplace=True)
 
@@ -110,7 +110,7 @@ def compile_sorted_df(
     df = sorted_df_widen_filtered(df)
 
     if out_path:
-        print(f'Save top {lines} lines to {out_path}')
+        print(f"Save top {lines} lines to {out_path}")
         outdf = df.loc[range(lines)] if lines else df
         outdf.to_csv(out_path, sep="\t", index=False)
 
