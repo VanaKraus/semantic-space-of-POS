@@ -72,6 +72,7 @@ def train(
 
     # Read the TSV file
     data = pd.read_csv(input_file, sep="\t")
+    data.columns = data.columns.str.removesuffix("_rf")
 
     # Extract the feature columns
     feature_cols = [cname for cname in data if re.match(r"D[0-9]+", cname)]

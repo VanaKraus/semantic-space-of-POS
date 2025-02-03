@@ -99,7 +99,9 @@ def sorted_df_widen_filtered(df: pd.DataFrame) -> pd.DataFrame:
     df.columns.names = [None]
 
     if "nan" in df.columns:
-        df = df.drop(columns=["nan"]).fillna(0)
+        df = df.drop(columns=["nan"])
+
+    df = df.fillna(0)
 
     return df
 
