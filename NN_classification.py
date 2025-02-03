@@ -132,7 +132,7 @@ def train(
     data_combined = data_combined.drop(columns=feature_cols)
 
     cols = data_combined.columns.tolist()
-    pos_index = cols.index("POS")
+    pos_index = cols.index("POS_Top")
     cols.insert(pos_index + 1, cols.pop(cols.index("Training_Round")))
     data_combined = data_combined[cols]
 

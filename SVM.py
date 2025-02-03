@@ -72,7 +72,7 @@ def predict_class_probabilities(
 
     # Move the "Training_Round" column to be just after the "POS" column
     columns = output_data.columns.tolist()
-    czech_index = columns.index("POS")
+    czech_index = columns.index("POS_Top")
     columns.insert(czech_index + 1, columns.pop(columns.index("Training_Round")))
     output_data = output_data[columns]
 
