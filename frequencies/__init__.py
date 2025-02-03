@@ -46,6 +46,12 @@ def sorted_df_pivot_long(df: pd.DataFrame) -> pd.DataFrame:
 
     mdf[["POS_Lemma", "Frequency"]] = mdf["Variants"].str.extract(r"^(.+:?):(.+)$")
     mdf[["POS", "Lemma"]] = mdf["POS_Lemma"].str.extract(r"^([A-Z]+)_(.+)$")
+    mdf = mdf.loc[
+        (-mdf["Frequency"].isna())
+        & (-mdf["Word"].isna())
+        & (-mdf["POS"].isna())
+        & (-mdf["Lemma"].isna())
+    ]
     mdf = mdf.astype(
         {"Frequency": "int64", "Word": "str", "POS": "str", "Lemma": "str"}
     )
@@ -92,7 +98,8 @@ def sorted_df_widen_filtered(df: pd.DataFrame) -> pd.DataFrame:
 
     df.columns.names = [None]
 
-    df = df.drop(columns=["nan"]).fillna(0)
+    if "nan" in df.columns:
+        df = df.drop(columns=["nan"]).fillna(0)
 
     return df
 
