@@ -39,7 +39,8 @@ def match_embeddings(
             if ctr_df % 50 == 0:
                 log_progress(ctr_lines, ctr_df)
 
-    notna_selector = df.notna().all(axis=1)
+    # filter out words without assigned embeddings
+    notna_selector = df.iloc[:, -100:].notna().all(axis=1)
     print(f"{int(notna_selector.sum())} valid words matched ({target_size=})")
 
     df = (
