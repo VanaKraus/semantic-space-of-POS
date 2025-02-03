@@ -44,10 +44,10 @@ def match_embeddings(
 
     df = (
         df.loc[notna_selector]
-        .reset_index(drop=True)
         .sort_values(by=["Freq_Sum"], ascending=False)[:target_size]
+        .reset_index(drop=True)
     )
 
-    df.to_csv(out_tsv, sep="\t", encoding=ENCODING)
+    df.to_csv(out_tsv, sep="\t", encoding=ENCODING, index=False)
 
     return df.astype({s: "float" for s in dimensions_selector})

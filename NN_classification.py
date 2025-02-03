@@ -44,8 +44,7 @@ def train(
     # Extract the target column (POS)
     y = data["POS"].values  # Convert to NumPy array
 
-    # Extract the group column ('Lemma')
-    groups = data["Lemma"].values
+    groups = data["Group"].values
 
     # Encode the POS labels to integers
     label_encoder = LabelEncoder()

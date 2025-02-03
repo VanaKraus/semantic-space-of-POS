@@ -29,8 +29,7 @@ def predict_class_probabilities(
     # Extract the target column (POS)
     y = data["POS"]
 
-    # Extract the group column (Lemma)
-    groups = data["Lemma"]
+    groups = data["Group"]
 
     # Create a GroupShuffleSplit object
     print("Shuffle")
