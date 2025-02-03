@@ -33,14 +33,14 @@ def _one_hot(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray[str]]:
     return to_categorical(y_encoded), label_encoder.classes_
 
 
-def _relative(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray[str]]:
+def _proportional(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray[str]]:
     # POS columns start at the 5th position and are followed by a 100D vector
     return df.iloc[:, 5:-100].values, df.columns[5:-100]
 
 
 _Y_PREPS: dict[str, Callable[[pd.DataFrame], tuple[np.ndarray, list[str]]]] = {
     "one_hot": _one_hot,
-    "relative": _relative,
+    "proportional": _proportional,
 }
 
 
@@ -52,8 +52,12 @@ def train(
     layers: Iterable[int],
     bottleneck_dimensions: int,
     seed: int,
-    y_preparation: Literal["one_hot", "relative"],
+    y_preparation: Literal["one_hot", "proportional"],
 ):
+    print(
+        f"Bottleneck NN: {input_file=} {output_file=} {output_file_sets=} {n_epochs=} {layers=} {bottleneck_dimensions=} {seed=} {y_preparation=}"
+    )
+
     set_random_seed(seed)
     tf.config.experimental.enable_op_determinism()
 
@@ -142,9 +146,6 @@ def train(
         data_eval = data.iloc[eval_idx].copy()
         for dim in range(bottleneck_dimensions):
             data_eval[f"Bottleneck layer {dim+1}"] = embeddings_eval[:, dim]
-
-        # Get POS category names in the same order as in the probabilities
-        # pos_category_names = label_encoder.classes_
 
         # Add probability columns for each POS category
         for idx, pos in enumerate(pos_category_names):

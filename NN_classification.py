@@ -2,8 +2,10 @@
 
 import re
 import sys
-from collections.abc import Iterable
+from collections.abc import Iterable, Callable
+from typing import Literal
 
+import numpy as np
 import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
@@ -19,9 +21,41 @@ from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.layers import Input, Dense, Dropout
 
 
+def _one_hot(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray[str]]:
+    # Extract the target column (POS)
+    y = df["POS_Top"].values  # Convert to NumPy array
+
+    # Encode the POS labels to integers
+    label_encoder = LabelEncoder()
+    y_encoded = label_encoder.fit_transform(y)
+
+    # Convert labels to one-hot encoding
+    return to_categorical(y_encoded), label_encoder.classes_
+
+
+def _proportional(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray[str]]:
+    # POS columns start at the 5th position and are followed by a 100D vector
+    return df.iloc[:, 5:-100].values, df.columns[5:-100]
+
+
+_Y_PREPS: dict[str, Callable[[pd.DataFrame], tuple[np.ndarray, list[str]]]] = {
+    "one_hot": _one_hot,
+    "proportional": _proportional,
+}
+
+
 def train(
-    input_file: str, output_file: str, n_epochs: int, layers: Iterable[int], seed: int
+    input_file: str,
+    output_file: str,
+    n_epochs: int,
+    layers: Iterable[int],
+    seed: int,
+    y_preparation: Literal["one_hot", "proportional"],
 ):
+    print(
+        f"Classification NN: {input_file=} {output_file=} {n_epochs=} {layers=} {seed=} {y_preparation=}"
+    )
+
     set_random_seed(seed)
     tf.config.experimental.enable_op_determinism()
 
@@ -41,21 +75,14 @@ def train(
     feature_cols = [cname for cname in data if re.match(r"D[0-9]+", cname)]
     X = data[feature_cols].values  # Convert to NumPy array
 
-    # Extract the target column (POS)
-    y = data["POS_Top"].values  # Convert to NumPy array
+    # Convert labels to one-hot encoding
+    y_prepared, pos_category_names = _Y_PREPS[y_preparation](data)
 
     groups = data["Group"].values
 
-    # Encode the POS labels to integers
-    label_encoder = LabelEncoder()
-    y_encoded = label_encoder.fit_transform(y)
-
-    # Convert labels to one-hot encoding
-    y_one_hot = to_categorical(y_encoded)
-
     # Split the data into two halves, grouped by 'Lemma'
     gss = GroupShuffleSplit(n_splits=1, test_size=0.5, random_state=seed)
-    train_idx_A, train_idx_B = next(gss.split(X, y_encoded, groups=groups))
+    train_idx_A, train_idx_B = next(gss.split(X, y_prepared, groups=groups))
 
     # Create an empty list to collect evaluation results
     eval_results = []
@@ -68,7 +95,7 @@ def train(
 
         # Split the data into training and evaluation sets
         X_train, X_eval = X[train_idx], X[eval_idx]
-        y_train, y_eval = y_one_hot[train_idx], y_one_hot[eval_idx]
+        y_train, y_eval = y_prepared[train_idx], y_prepared[eval_idx]
 
         # Define the neural network
         input_dim = X.shape[1]
@@ -80,7 +107,7 @@ def train(
             x = Dropout(0.3)(x)
 
         # N-D latent space
-        outputs = Dense(y_one_hot.shape[1], activation="softmax")(x)
+        outputs = Dense(y_prepared.shape[1], activation="softmax")(x)
 
         model = Model(inputs=inputs, outputs=outputs)
 
@@ -111,9 +138,6 @@ def train(
 
         # Create a DataFrame for the evaluation results
         data_eval = data.iloc[eval_idx].copy()
-
-        # Get POS category names in the same order as in the probabilities
-        pos_category_names = label_encoder.classes_
 
         # Add probability columns for each POS category
         for idx, pos in enumerate(pos_category_names):
