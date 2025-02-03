@@ -45,13 +45,22 @@ def sorted_df_pivot_long(df: pd.DataFrame) -> pd.DataFrame:
     mdf = mdf.explode("Variants", ignore_index=True)
 
     mdf[["POS_Lemma", "Frequency"]] = mdf["Variants"].str.extract(r"^(.+:?):(.+)$")
-    mdf[["POS", "Lemma"]] = mdf["POS_Lemma"].str.extract(r"^([A-Z]+)_(.+)$")
+    mdf[["POS", "Lemma"]] = mdf["POS_Lemma"].str.extract(r"^([A-Z\|]+)_(.+)$")
+
     mdf = mdf.loc[
         (-mdf["Frequency"].isna())
         & (-mdf["Word"].isna())
         & (-mdf["POS"].isna())
         & (-mdf["Lemma"].isna())
+        & (mdf["Word"] != "|")
     ]
+
+    mdf["POS"] = mdf["POS"].str.split("|")
+    mdf["Lemma"] = mdf["Lemma"].str.split("|")
+    # FIXME: this effectively doubles the total frequency since it's not adjusted at the exploded rows
+    mdf = mdf.explode(["POS", "Lemma"], ignore_index=True)
+    mdf["POS_Lemma"] = mdf["POS"] + "_" + mdf["Lemma"]
+
     mdf = mdf.astype(
         {"Frequency": "int64", "Word": "str", "POS": "str", "Lemma": "str"}
     )
