@@ -3,8 +3,8 @@ import networkx as nx
 import numpy as np
 
 
-def create_groups(df: pd.DataFrame, out_path: str | None = None):
-    df = df.copy()
+def create_groups(path: str, out_path: str | None = None) -> pd.DataFrame:
+    df = pd.read_csv(path, sep="\t")
 
     # Step 1: Create edges for the graph
     edges = []
