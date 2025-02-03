@@ -42,7 +42,7 @@ def train(
     X = data[feature_cols].values  # Convert to NumPy array
 
     # Extract the target column (POS)
-    y = data["POS"].values  # Convert to NumPy array
+    y = data["POS_Top"].values  # Convert to NumPy array
 
     groups = data["Group"].values
 

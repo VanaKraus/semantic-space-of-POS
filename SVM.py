@@ -27,7 +27,7 @@ def predict_class_probabilities(
     X = data[feature_cols]
 
     # Extract the target column (POS)
-    y = data["POS"]
+    y = data["POS_Top"]
 
     groups = data["Group"]
 

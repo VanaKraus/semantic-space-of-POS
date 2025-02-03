@@ -53,6 +53,6 @@ def create_groups(path: str, out_path: str | None = None) -> pd.DataFrame:
     df = df[cols]
 
     if out_path:
-        df.to_csv(out_path, sep="\t")
+        df.to_csv(out_path, sep="\t", index=False)
 
     return df

@@ -79,6 +79,7 @@ def sorted_df_widen_filtered(df: pd.DataFrame) -> pd.DataFrame:
 
     df["Frequency_Relative"] = df["Frequency"] / df["Freq_Sum"]
 
+    df["POS"] = df["POS"] + "_rf"
     df = (
         df.pivot(
             index=["Word", "Freq_Sum", "POS_Top", "Lemmas"],
