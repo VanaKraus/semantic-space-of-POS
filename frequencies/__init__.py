@@ -121,7 +121,7 @@ def compile_sorted_df(
 
     if out_path:
         print(f"Save top {lines} lines to {out_path}")
-        outdf = df.loc[range(lines)] if lines else df
+        outdf = df[:lines] if lines else df
         outdf.to_csv(out_path, sep="\t", index=False)
 
     return df
