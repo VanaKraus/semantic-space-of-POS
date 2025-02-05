@@ -79,6 +79,7 @@ def train(
 
     # Convert labels to one-hot encoding
     y_prepared, pos_category_names = _Y_PREPS[y_preparation](data)
+    pos_category_names_dict = {i: n for i, n in enumerate(pos_category_names)}
 
     groups = data["Group"].values
 
@@ -141,11 +142,40 @@ def train(
         probabilities_max = np.argmax(probabilities_eval, axis=1)
         y_eval_max = np.argmax(y_eval, axis=1)
 
-        print("Confusion Matrix:\n", confusion_matrix(y_eval_max, probabilities_max))
-        print(
-            "Classification Report:\n",
-            classification_report(y_eval_max, probabilities_max, zero_division=1),
+        probabilities_labeled = np.vectorize(pos_category_names_dict.get)(
+            probabilities_max
         )
+        y_eval_labeled = np.vectorize(pos_category_names_dict.get)(y_eval_max)
+
+        # Confusion matrix
+        pd.options.display.float_format = "{:.0f}".format
+
+        conf_matrix = pd.DataFrame(
+            to_categorical(probabilities_max), columns=pos_category_names
+        )
+        conf_matrix["target"] = y_eval_labeled
+        conf_matrix = conf_matrix.groupby("target").sum()
+        print("Confusion Matrix:")
+        print(conf_matrix)
+        print()
+
+        print("Classification Report:\n")
+        print(
+            classification_report(
+                y_eval_labeled, probabilities_labeled, zero_division=1
+            )
+        )
+
+        # Avg. output activation for each POS
+        pd.options.display.float_format = "{:.2f}".format
+        df_avg = pd.DataFrame(probabilities_eval, columns=pos_category_names)
+        df_avg["target"] = y_eval_labeled
+        print("Mean output activation of each POS node for each target POS:")
+        print(df_avg.groupby("target").mean())
+        print()
+        print("Mean standard deviation of each POS node for each target POS:")
+        print(df_avg.groupby("target").agg("std"))
+        print()
 
         # Create a DataFrame for the evaluation results
         data_eval = data.iloc[eval_idx].copy()
