@@ -10,6 +10,7 @@ import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import GroupShuffleSplit
+from sklearn.metrics import confusion_matrix, classification_report
 
 import tensorflow as tf
 
@@ -142,6 +143,15 @@ def train(
         print(f"Prediction of bottleneck layer done ({i+1}).")
         probabilities_eval = model.predict(X_eval, verbose=0)
         print(f"Prediction of the final layer done ({i+1}).")
+
+        probabilities_max = np.argmax(probabilities_eval, axis=1)
+        y_eval_max = np.argmax(y_eval, axis=1)
+
+        print("Confusion Matrix:\n", confusion_matrix(y_eval_max, probabilities_max))
+        print(
+            "Classification Report:\n",
+            classification_report(y_eval_max, probabilities_max, zero_division=1),
+        )
 
         # Create a DataFrame for the evaluation results
         data_eval = data.iloc[eval_idx].copy()
