@@ -145,7 +145,7 @@ def plot_confusion_matrix(matrix_path, output_path, title):
 
     # Plot heatmap
     ax = sns.heatmap(
-        matrix_df_rel, annot=formatted_results, cmap="rocket_r", square=True, fmt=""
+        matrix_df_rel, annot=formatted_results, cmap="Oranges", square=True, fmt=""
     )
     plt.yticks(rotation=0)
 
