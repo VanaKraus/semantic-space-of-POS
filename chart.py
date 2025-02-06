@@ -4,24 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-ud_color_scheme = {
-    "ADJ": "#e60049",
-    "ADP": "#dc0ab4",
-    "ADV": "#50e991",
-    "AUX": "#fd7f6f",
-    "CCONJ": "#9b19f5",
-    "DET": "#ffa300",
-    "NOUN": "#0bb4ff",
-    "NUM": "#b3d4ff",
-    "PART": "#00bfa0",
-    "PRON": "#77ac35",
-    "SCONJ": "#7c1158",
-    "VERB": "#e6d800",
-}
-
-legend_keys = list(ud_color_scheme.keys())
-legend_keys.sort()
-
 
 def humanify_probability(prob: float) -> str:
     rounded = round(prob, 3)
@@ -37,8 +19,12 @@ def make_chart(
     axis_label_basename,
     title,
     hover_data,
+    color_scheme: dict[str, str],
 ):
     data_tmp = read_csv(data, sep="\t") if isinstance(data, str) else data.copy()
+
+    legend_keys = list(color_scheme.keys())
+    legend_keys.sort()
 
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
@@ -59,7 +45,7 @@ def make_chart(
         x=x_column,
         y=y_column,
         color=color,
-        color_discrete_map=ud_color_scheme,
+        color_discrete_map=color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
         hover_data=mhover_cols,
@@ -87,8 +73,12 @@ def make_chart_3d(
     axis_label_basename,
     title,
     hover_data,
+    color_scheme: dict[str, str],
 ):
     data_tmp = read_csv(data, sep="\t") if isinstance(data, str) else data.copy()
+
+    legend_keys = list(color_scheme.keys())
+    legend_keys.sort()
 
     # Prepare the DataFrame for plotting
     # For demonstration, we will use the first two vector columns as X and Y axes (assuming t-SNE/umap has reduced to 2 dimensions)
@@ -111,7 +101,7 @@ def make_chart_3d(
         y=y_column,
         z=z_column,
         color=color,
-        color_discrete_map=ud_color_scheme,
+        color_discrete_map=color_scheme,
         category_orders={color: legend_keys},
         hover_name="Word",
         hover_data=mhover_cols,
@@ -152,7 +142,6 @@ def plot_confusion_matrix(matrix_path, output_path, title):
         return f"{val:.0f}" if not np.isnan(val) else ""
 
     formatted_results = matrix_df.map(format_value)
-    print(formatted_results)
 
     # Plot heatmap
     ax = sns.heatmap(
