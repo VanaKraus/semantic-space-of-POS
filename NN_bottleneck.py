@@ -49,6 +49,7 @@ def train(
     input_file: str,
     output_file: str,
     output_file_sets: Iterable[str],
+    confusion_matrices_files: Iterable[str],
     n_epochs: int,
     layers: Iterable[int],
     bottleneck_dimensions: int,
@@ -155,13 +156,12 @@ def train(
 
         # Confusion matrix
         pd.options.display.float_format = "{:.0f}".format
-
         conf_matrix = pd.DataFrame(
             to_categorical(probabilities_max), columns=pos_category_names
         )
         conf_matrix["target"] = y_eval_labeled
         conf_matrix = conf_matrix.groupby("target").sum()
-        print("Confusion Matrix:")
+        print("Confusion Matrix:\n")
         print(conf_matrix)
         print()
 
@@ -172,15 +172,29 @@ def train(
             )
         )
 
-        # Avg. output activation for each POS
+        conf_matrix.to_csv(confusion_matrices_files[i], sep="\t", index=False)
+
+        # Relative confusion matrix
         pd.options.display.float_format = "{:.2f}".format
+        rel_cm = conf_matrix.copy()
+        rel_cm["sum"] = rel_cm.sum(axis=1)
+        for pos in pos_category_names:
+            rel_cm[pos] = rel_cm[pos] / rel_cm["sum"]
+        rel_cm = rel_cm.drop(columns=["sum"])
+        print("Relative confusion matrix:\n")
+        print(rel_cm)
+        print()
+
+        # Avg. output activation for each POS
         df_avg = pd.DataFrame(probabilities_eval, columns=pos_category_names)
         df_avg["target"] = y_eval_labeled
-        print("Mean output activation of each POS node for each target POS:")
-        print(df_avg.groupby("target").mean())
+        df_avg_mean = df_avg.groupby("target").mean()
+        df_avg_std = df_avg.groupby("target").agg("std")
+        print("Mean output activation of each POS node for each target POS:\n")
+        print(df_avg_mean)
         print()
-        print("Mean standard deviation of each POS node for each target POS:")
-        print(df_avg.groupby("target").agg("std"))
+        print("Mean standard deviation of each POS node for each target POS:\n")
+        print(df_avg_std)
         print()
 
         # Create a DataFrame for the evaluation results
