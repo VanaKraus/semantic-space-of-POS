@@ -167,3 +167,5 @@ def plot_confusion_matrix(matrix_path, output_path, title):
     plt.tight_layout()
 
     plt.savefig(output_path)
+
+    print(f"{title} generated successfully.")
