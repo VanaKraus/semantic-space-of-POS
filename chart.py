@@ -1,5 +1,8 @@
 import plotly.express as px
 from pandas import DataFrame, read_csv
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 ud_color_scheme = {
     "ADJ": "#e60049",
@@ -126,3 +129,41 @@ def make_chart_3d(
     fig.write_image(output_pdf, format="pdf")
 
     print(f"{title} generated successfully.")
+
+
+def plot_confusion_matrix(matrix_path, output_path, title):
+    matrix_df = read_csv(matrix_path, sep="\t")
+    pos = matrix_df.columns
+    matrix_df = matrix_df.astype({p: "int" for p in pos})
+
+    matrix_df_rel = matrix_df.astype({p: "float" for p in pos})
+    matrix_df_rel["sum"] = matrix_df_rel.sum(axis=1)
+    for p in pos:
+        matrix_df_rel[p] = matrix_df_rel[p] / matrix_df_rel["sum"]
+    matrix_df_rel = matrix_df_rel.drop(columns=["sum"])
+
+    matrix_df.index = pos
+    matrix_df_rel.index = pos
+
+    plt.figure(figsize=(7.3, 6))
+
+    # Format the difference values
+    def format_value(val):
+        return f"{val:.0f}" if not np.isnan(val) else ""
+
+    formatted_results = matrix_df.map(format_value)
+    print(formatted_results)
+
+    # Plot heatmap
+    ax = sns.heatmap(
+        matrix_df_rel, annot=formatted_results, cmap="rocket_r", square=True, fmt=""
+    )
+    plt.yticks(rotation=0)
+
+    ax.collections[0].colorbar.set_label("Preference strength by each target POS")
+    ax.set(xlabel="Predicted POS", ylabel="Target POS")
+
+    plt.title(title)
+    plt.tight_layout()
+
+    plt.savefig(output_path)

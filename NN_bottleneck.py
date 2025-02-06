@@ -165,13 +165,6 @@ def train(
         print(conf_matrix)
         print()
 
-        print("Classification Report:\n")
-        print(
-            classification_report(
-                y_eval_labeled, probabilities_labeled, zero_division=1
-            )
-        )
-
         conf_matrix.to_csv(confusion_matrices_files[i], sep="\t", index=False)
 
         # Relative confusion matrix
@@ -196,6 +189,13 @@ def train(
         print("Mean standard deviation of each POS node for each target POS:\n")
         print(df_avg_std)
         print()
+
+        print("Classification Report:\n")
+        print(
+            classification_report(
+                y_eval_labeled, probabilities_labeled, zero_division=1
+            )
+        )
 
         # Create a DataFrame for the evaluation results
         data_eval = data.iloc[eval_idx].copy()
