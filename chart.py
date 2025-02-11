@@ -129,7 +129,7 @@ def plot_confusion_matrix(matrix_path, output_path, title):
     matrix_df_rel = matrix_df.astype({p: "float" for p in pos})
     matrix_df_rel["sum"] = matrix_df_rel.sum(axis=1)
     for p in pos:
-        matrix_df_rel[p] = matrix_df_rel[p] / matrix_df_rel["sum"]
+        matrix_df_rel[p] = matrix_df_rel[p] / np.maximum(matrix_df_rel["sum"], 1)
     matrix_df_rel = matrix_df_rel.drop(columns=["sum"])
 
     matrix_df.index = pos

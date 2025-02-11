@@ -155,6 +155,12 @@ def train(
         )
         conf_matrix["target"] = y_eval_labeled
         conf_matrix = conf_matrix.groupby("target").sum()
+
+        for pos in pos_category_names:
+            if pos not in conf_matrix.index.values:
+                conf_matrix.loc[pos] = [0] * len(pos_category_names)
+        conf_matrix = conf_matrix.sort_index()
+
         print("Confusion Matrix:\n")
         print(conf_matrix)
         print()
@@ -166,7 +172,7 @@ def train(
         rel_cm = conf_matrix.copy()
         rel_cm["sum"] = rel_cm.sum(axis=1)
         for pos in pos_category_names:
-            rel_cm[pos] = rel_cm[pos] / rel_cm["sum"]
+            rel_cm[pos] = rel_cm[pos] / np.maximum(rel_cm["sum"], 1)
         rel_cm = rel_cm.drop(columns=["sum"])
         print("Relative confusion matrix:\n")
         print(rel_cm)
